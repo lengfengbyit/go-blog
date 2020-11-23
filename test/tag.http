@@ -1,0 +1,21 @@
+
+# 标签请求
+GET {{host}}/tags?state=1
+Accept: application/json
+Content-Type: application/json
+
+###
+POST {{host}}/tags
+Content-Type: application/x-www-form-urlencoded
+
+name=tags&created_by=fym
+
+###
+PUT {{host}}/tags/2
+Content-Type: application/x-www-form-urlencoded
+
+name=news&modified_by=fym&state=1
+
+###
+DELETE {{host}}/tags/1
+Accept: application/json

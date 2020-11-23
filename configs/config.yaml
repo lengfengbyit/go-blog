@@ -1,0 +1,35 @@
+Server:
+  RunMode: debug  # debug, release
+  HttpPort: 8000
+  ReadTimeout: 60
+  WriteTimeout: 60
+App:
+  DefaultPageSize: 10
+  MaxPageSize: 100
+  LogSavePath: storage/logs
+  LogFileName: app
+  LogFileExt: .log
+Database:
+  DBType: mysql
+  UserName: root
+  Password: admin123
+  Host: 127.0.0.1
+  DBName: blog_service
+  TablePrefix: blog_
+  Charset: utf8
+  ParseTime: True
+  MaxIdleConns: 10
+  MaxOpenConns: 30
+Upload:
+  SavePath: storage/uploads
+  ServerUrl: static
+  ImageMaxSize: 10
+  ImageAllowExts:
+    - gif
+    - png
+    - jpeg
+    - jpg
+JWT:
+  Secret: eddycjy
+  Issuer: blog-service
+  Expire: 7200
