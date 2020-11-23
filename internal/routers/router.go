@@ -14,7 +14,7 @@ import (
 
 func NewRouter() *gin.Engine {
 	r := gin.New()
-	r.Use(gin.Logger(), gin.Recovery())
+	r.Use(gin.Logger(), middleware.Recovery(), middleware.AccessLog())
 	r.Use(middleware.Translations()) // 注册中间件
 
 	//url := ginSwagger.URL("http://127.0.0.1:8080/swagger/doc.json")

@@ -29,29 +29,25 @@ func init() {
 }
 
 func setupSetting() error {
+	settingMap := map[string]interface{}{
+		"Server":   &global.ServerSetting,
+		"App":      &global.AppSetting,
+		"Database": &global.DatabaseSetting,
+		"upload":   &global.UploadSetting,
+		"JWT":      &global.JWTSetting,
+		"Email":    &global.EmailSetting,
+	}
+
 	mySetting, err := setting.NewSetting()
 	if err != nil {
 		return err
 	}
-	err = mySetting.ReadSection("Server", &global.ServerSetting)
-	if err != nil {
-		return err
-	}
-	err = mySetting.ReadSection("App", &global.AppSetting)
-	if err != nil {
-		return err
-	}
-	err = mySetting.ReadSection("Database", &global.DatabaseSetting)
-	if err != nil {
-		return err
-	}
-	err = mySetting.ReadSection("Upload", &global.UploadSetting)
-	if err != nil {
-		return err
-	}
-	err = mySetting.ReadSection("JWT", &global.JWTSetting)
-	if err != nil {
-		return err
+
+	for key, val := range settingMap {
+		err = mySetting.ReadSection(key, val)
+		if err != nil {
+			return err
+		}
 	}
 
 	global.ServerSetting.ReadTimeout *= time.Second
@@ -97,13 +93,13 @@ func main() {
 	router := routers.NewRouter()
 
 	s := &http.Server{
-		Addr:           ":8080",
+		Addr:           ":8081",
 		Handler:        router,
 		ReadTimeout:    global.ServerSetting.ReadTimeout,
 		WriteTimeout:   global.ServerSetting.WriteTimeout,
 		MaxHeaderBytes: 1 << 20,
 	}
 
-	fmt.Println("Start server http://locahost:8080")
-	s.ListenAndServe()
+	fmt.Println("Start server http://locahost:8081")
+	_ = s.ListenAndServe()
 }

@@ -33,3 +33,12 @@ JWT:
   Secret: eddycjy
   Issuer: blog-service
   Expire: 7200
+Email:
+  Host: smtp.qq.com
+  Port: 465
+  UserName: xxxxx@qq.com
+  Password:
+  IsSSL: true
+  From: xxxxx@qq.com
+  To:
+    - xxxxx@qq.com
