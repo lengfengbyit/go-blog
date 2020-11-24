@@ -22,10 +22,11 @@ type Model struct {
 
 // NewDBEngine
 func NewDBEngine(databaseSetting *setting.DatabaseSetting) (*gorm.DB, error) {
-	s := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=%s&parseTime=%t&loc=Local",
+	s := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=%t&loc=Local",
 		databaseSetting.UserName,
 		databaseSetting.Password,
 		databaseSetting.Host,
+		databaseSetting.Port,
 		databaseSetting.DBName,
 		databaseSetting.Charset,
 		databaseSetting.ParseTime)

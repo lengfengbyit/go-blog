@@ -16,7 +16,7 @@ require (
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/jinzhu/gorm v1.9.16
 	github.com/json-iterator/go v1.1.10 // indirect
-	github.com/juju/ratelimit v1.0.1 // indirect
+	github.com/juju/ratelimit v1.0.1
 	github.com/kr/pty v1.1.5 // indirect
 	github.com/magiconair/properties v1.8.4 // indirect
 	github.com/mailru/easyjson v0.7.6 // indirect
