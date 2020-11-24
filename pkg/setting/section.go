@@ -15,6 +15,7 @@ type AppSetting struct {
 	LogSavePath     string
 	LogFileName     string
 	LogFileExt      string
+	LogDateSuffix   bool
 }
 
 type DatabaseSetting struct {

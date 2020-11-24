@@ -9,6 +9,7 @@ App:
   LogSavePath: storage/logs
   LogFileName: app
   LogFileExt: .log
+  LogDateSuffix: true
 Database:
   DBType: mysql
   UserName: root

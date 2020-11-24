@@ -71,9 +71,15 @@ func setupDBEngine() error {
 
 func setupLogger() {
 
-	filePath := fmt.Sprintf("%s/%s%s",
+	dateSuffix := ""
+	if global.AppSetting.LogDateSuffix {
+		dateSuffix = "." + time.Now().Format("20060102")
+	}
+
+	filePath := fmt.Sprintf("%s/%s%s%s",
 		global.AppSetting.LogSavePath,
 		global.AppSetting.LogFileName,
+		dateSuffix,
 		global.AppSetting.LogFileExt)
 
 	global.Logger = logger.NewLogger(&lumberjack.Logger{
