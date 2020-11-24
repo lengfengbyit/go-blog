@@ -93,13 +93,13 @@ func main() {
 	router := routers.NewRouter()
 
 	s := &http.Server{
-		Addr:           ":8081",
+		Addr:           ":" + global.ServerSetting.HttpPort,
 		Handler:        router,
 		ReadTimeout:    global.ServerSetting.ReadTimeout,
 		WriteTimeout:   global.ServerSetting.WriteTimeout,
 		MaxHeaderBytes: 1 << 20,
 	}
 
-	fmt.Println("Start server http://locahost:8081")
+	fmt.Println("Start server http://locahost:" + global.ServerSetting.HttpPort)
 	_ = s.ListenAndServe()
 }
