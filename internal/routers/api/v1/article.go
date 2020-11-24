@@ -38,6 +38,8 @@ func (a Article) Get(c *gin.Context) {
 	art, err := ser.GetArticle(id)
 	if err != nil {
 		global.Logger.Errorf(err.Error())
+		response.ToErrorResponse(errcode.ErrorGetArticleFail)
+		return
 	}
 
 	response.ToResponse(art)

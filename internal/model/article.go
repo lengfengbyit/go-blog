@@ -19,7 +19,8 @@ func (article Article) TableName() string {
 }
 
 func (article *Article) First(db *gorm.DB) (*Article, error){
-	err := db.Preload("Tags").First(article).Error
+	art := &Article{}
+	err := db.Preload("Tags").First(art).Error
 	return article, err
 }
 

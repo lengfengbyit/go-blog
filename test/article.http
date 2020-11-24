@@ -3,17 +3,18 @@
 ###
 GET {{host}}/articles
 Accept: application/json
-Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBfa2V5IjoiMjc1NjY4YmE2NTUwNDljZDczOWQxZDllNmIzMWNjZjEiLCJBcHBfc2VjcmV0IjoiN2M5NzI2NjMxNzBkNmJjMTg0ODRkMDViYzk4NzIyZjQiLCJleHAiOjE2MDYwNjY4OTEsImlzcyI6ImJsb2ctc2VydmljZSJ9.CTqvOMwX6sSoYtjk43aZrAKJ9bNapbIosLpWBEEo704
+Token: {{token}}
 
 ###
-GET {{host}}/articles/2
+GET {{host}}/articles/1
 Accept: application/json
-
+Token: {{token}}
 
 ###
 
 POST {{host}}/articles
 Content-Type: application/json
+Token: {{token}}
 
 {
   "title": "this is a articles3",
@@ -29,6 +30,7 @@ Content-Type: application/json
 
 PUT {{host}}/articles/1
 Content-Type: application/json
+Token: {{token}}
 
 {
   "title": "this is update title",
@@ -38,3 +40,5 @@ Content-Type: application/json
 ###
 
 DELETE {{host}}/articles/1
+Content-Type: application/json
+Token: {{token}}

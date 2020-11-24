@@ -84,4 +84,4 @@ create table blog_service.blog_auth
 
 
 insert into blog_auth (app_key, app_secret, created_on, created_by, modified_on, modified_by, deleted_on, is_del)
-values ('eddycjy', 'go-programming-tour-book', 0, 'eddycjy', 0, '', 0, 0)
+values ('go-blog', 'go-blog', 0, 'lengfengbyit', 0, '', 0, 0)

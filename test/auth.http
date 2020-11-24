@@ -2,8 +2,8 @@ POST {{common-host}}/auth
 Content-Type: application/json
 
 {
-  "appKey": "eddycjy",
-  "appSecret": "go-programming-tour-book"
+  "appKey": "go-blog",
+  "appSecret": "go-blog"
 }
 
 ###
