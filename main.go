@@ -9,6 +9,7 @@ import (
 	"gotour/blog-service/internal/routers"
 	"gotour/blog-service/pkg/logger"
 	"gotour/blog-service/pkg/setting"
+	"gotour/blog-service/pkg/tracer"
 	"log"
 	"net/http"
 	"time"
@@ -23,6 +24,11 @@ func init() {
 	err = setupDBEngine()
 	if err != nil {
 		log.Fatalf("init.setupDBEngine err: %v", err)
+	}
+
+	err = setupTracer()
+	if err != nil {
+		log.Fatalf("init.setupTracer err: %v", err)
 	}
 
 	setupLogger()
@@ -85,10 +91,23 @@ func setupLogger() {
 
 	global.Logger = logger.NewLogger(&lumberjack.Logger{
 		Filename:  filePath,
-		MaxSize:   600,
+		MaxSize:   100,
 		MaxAge:    10,
 		LocalTime: true,
 	}, "", log.LstdFlags).WithCaller(2)
+}
+
+func setupTracer() error {
+	jaegerTracer, _, err := tracer.NewJaegerTracer(
+		"blog-service",
+		"127.0.0.1:6831",
+	)
+	if err != nil {
+		return err
+	}
+
+	global.Tracer = jaegerTracer
+	return nil
 }
 
 // @title 博客系统

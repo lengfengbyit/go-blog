@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	otgorm "github.com/eddycjy/opentracing-gorm"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	"gotour/blog-service/global"
@@ -51,6 +52,9 @@ func NewDBEngine(databaseSetting *setting.DatabaseSetting) (*gorm.DB, error) {
 		updateTimeStampForUpdateCallback)
 	db.Callback().Delete().Replace("gorm:delete",
 		deleteCallback)
+
+	// 添加回调， 注册链路跟踪
+	otgorm.AddGormCallbacks(db)
 
 	return db, nil
 }

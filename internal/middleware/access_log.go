@@ -42,7 +42,7 @@ func AccessLog() gin.HandlerFunc {
 
 		s := "access log: method: %s, status_code: %d, " +
 			"begin_time: %s, end_time: %s, cost_time(ms): %d"
-		global.Logger.WithFields(fields).Infof(s,
+		global.Logger.WithFields(fields).Infof(c, s,
 			c.Request.Method,
 			bodyWriter.Status(),
 			helper.TimeFmt(beginTime, "datetime"),

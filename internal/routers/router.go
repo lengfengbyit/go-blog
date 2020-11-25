@@ -25,10 +25,10 @@ func setupLimiter() limiter.LimiterIface {
 	var rules []limiter.LimiterBucketRule
 	for _, path := range paths {
 		rule := limiter.LimiterBucketRule{
-			Key: path,
+			Key:          path,
 			FillInterval: time.Second,
-			Capacity: 2,
-			Quantum:1,
+			Capacity:     2,
+			Quantum:      1,
 		}
 		rules = append(rules, rule)
 	}
@@ -45,12 +45,13 @@ func NewRouter() *gin.Engine {
 	r.Use(middleware.RateLimiter(setupLimiter()))
 	r.Use(middleware.ContextTimeout(global.AppSetting.ContextTimeout))
 	r.Use(middleware.Translations()) // 参数自动验证错误内容翻译成本地语言
+	r.Use(middleware.Traceing())     // 链路跟踪
 
 	//url := ginSwagger.URL("http://127.0.0.1:8080/swagger/doc.json")
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// 设置静态文件目录
-	r.StaticFS("./" + global.UploadSetting.ServerUrl, http.Dir(global.UploadSetting.SavePath))
+	r.StaticFS("./"+global.UploadSetting.ServerUrl, http.Dir(global.UploadSetting.SavePath))
 
 	tag := v1.NewTag()
 	article := v1.NewArticle()
@@ -74,11 +75,10 @@ func NewRouter() *gin.Engine {
 
 	// 上传文件
 	upload := api.NewUpload()
-	r.POST("/upload/file",upload.UploadFile)
+	r.POST("/upload/file", upload.UploadFile)
 
 	// JWT 获取 token
 	r.POST("/auth", api.GetAuth)
-
 
 	return r
 }
