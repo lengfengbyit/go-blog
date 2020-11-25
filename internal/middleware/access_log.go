@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"github.com/gin-gonic/gin"
 	"gotour/blog-service/global"
+	"gotour/blog-service/pkg/helper"
 	"gotour/blog-service/pkg/logger"
 	"time"
 )
@@ -30,9 +31,9 @@ func AccessLog() gin.HandlerFunc {
 
 		c.Writer = bodyWriter
 
-		beginTime := time.Now().Unix()
+		beginTime := time.Now()
 		c.Next()
-		endTime := time.Now().Unix()
+		endTime := time.Now()
 
 		fields := logger.Fields{
 			"request":  c.Request.PostForm.Encode(),
@@ -40,12 +41,13 @@ func AccessLog() gin.HandlerFunc {
 		}
 
 		s := "access log: method: %s, status_code: %d, " +
-			"begin_time: %d, end_time: %d"
+			"begin_time: %s, end_time: %s, cost_time(ms): %d"
 		global.Logger.WithFields(fields).Infof(s,
 			c.Request.Method,
 			bodyWriter.Status(),
-			beginTime,
-			endTime,
+			helper.TimeFmt(beginTime, "datetime"),
+			helper.TimeFmt(endTime, "datetime"),
+			endTime.Sub(beginTime).Milliseconds(),
 		)
 	}
 }

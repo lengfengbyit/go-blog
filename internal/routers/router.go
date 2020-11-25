@@ -9,13 +9,40 @@ import (
 	"gotour/blog-service/internal/routers/api"
 	v1 "gotour/blog-service/internal/routers/api/v1"
 	_ "gotour/blog-service/docs"
+	"gotour/blog-service/pkg/limiter"
 	"net/http"
+	"time"
 )
+
+func setupLimiter() limiter.LimiterIface {
+
+	paths := []string{
+		"/api/v1/articles",
+	}
+
+	methodLimiter := limiter.NewMethodLimiter()
+
+	var rules []limiter.LimiterBucketRule
+	for _, path := range paths {
+		rule := limiter.LimiterBucketRule{
+			Key: path,
+			FillInterval: 1 * time.Second,
+			Capacity: 2,
+			Quantum:1,
+		}
+		rules = append(rules, rule)
+	}
+
+	methodLimiter.AddBuckets(rules...)
+
+	return methodLimiter
+}
 
 func NewRouter() *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Logger(), middleware.Recovery(), middleware.AccessLog())
 	r.Use(middleware.Translations()) // 注册中间件
+	r.Use(middleware.RateLimiter(setupLimiter()))
 
 	//url := ginSwagger.URL("http://127.0.0.1:8080/swagger/doc.json")
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
