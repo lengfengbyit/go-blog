@@ -26,7 +26,7 @@ func setupLimiter() limiter.LimiterIface {
 	for _, path := range paths {
 		rule := limiter.LimiterBucketRule{
 			Key: path,
-			FillInterval: 1 * time.Second,
+			FillInterval: time.Second,
 			Capacity: 2,
 			Quantum:1,
 		}
@@ -40,9 +40,11 @@ func setupLimiter() limiter.LimiterIface {
 
 func NewRouter() *gin.Engine {
 	r := gin.New()
-	r.Use(gin.Logger(), middleware.Recovery(), middleware.AccessLog())
-	r.Use(middleware.Translations()) // 注册中间件
+	//r.Use(gin.Logger(), mi.Recovery())
+	r.Use(middleware.AccessLog(), middleware.Recovery())
 	r.Use(middleware.RateLimiter(setupLimiter()))
+	r.Use(middleware.ContextTimeout(global.AppSetting.ContextTimeout))
+	r.Use(middleware.Translations()) // 参数自动验证错误内容翻译成本地语言
 
 	//url := ginSwagger.URL("http://127.0.0.1:8080/swagger/doc.json")
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

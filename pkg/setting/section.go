@@ -16,6 +16,7 @@ type AppSetting struct {
 	LogFileName     string
 	LogFileExt      string
 	LogDateSuffix   bool
+	ContextTimeout  time.Duration
 }
 
 type DatabaseSetting struct {

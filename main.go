@@ -53,6 +53,7 @@ func setupSetting() error {
 	global.ServerSetting.ReadTimeout *= time.Second
 	global.ServerSetting.WriteTimeout *= time.Second
 	global.JWTSetting.Expire *= time.Second
+	global.AppSetting.ContextTimeout *= time.Second
 
 	return nil
 }
@@ -107,5 +108,6 @@ func main() {
 	}
 
 	fmt.Println("Start server http://locahost:" + global.ServerSetting.HttpPort)
-	_ = s.ListenAndServe()
+	err := s.ListenAndServe()
+	panic(err)
 }
