@@ -1,8 +1,10 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/pkg/errors"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"gotour/blog-service/global"
 	"gotour/blog-service/internal/model"
@@ -12,10 +14,21 @@ import (
 	"gotour/blog-service/pkg/tracer"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 )
 
+var (
+	port string
+	runMode string
+	config string
+)
+
 func init() {
+
+	// 设置启动参数
+	setupFlag()
+
 	err := setupSetting()
 	if err != nil {
 		log.Fatalf("init.setupSetting err: %v", err)
@@ -34,6 +47,35 @@ func init() {
 	setupLogger()
 }
 
+// @title 博客系统
+// @version 1.0
+// @description Go语言编程练习
+// @termsOfService http://fym123.top
+func main() {
+	gin.SetMode(global.ServerSetting.RunMode)
+	router := routers.NewRouter()
+
+	s := &http.Server{
+		Addr:           ":" + global.ServerSetting.HttpPort,
+		Handler:        router,
+		ReadTimeout:    global.ServerSetting.ReadTimeout,
+		WriteTimeout:   global.ServerSetting.WriteTimeout,
+		MaxHeaderBytes: 1 << 20,
+	}
+
+	fmt.Println("Start server http://locahost:" + global.ServerSetting.HttpPort)
+	err := s.ListenAndServe()
+	panic(err)
+}
+
+func setupFlag() {
+	flag.StringVar(&port, "port", "", "启动端口")
+	flag.StringVar(&runMode, "mode", "", "启动模式, debug or release")
+	flag.StringVar(&config, "config", "configs/", "指定要使用的配置文件路径")
+	flag.Parse()
+}
+
+
 func setupSetting() error {
 	settingMap := map[string]interface{}{
 		"Server":   &global.ServerSetting,
@@ -44,7 +86,7 @@ func setupSetting() error {
 		"Email":    &global.EmailSetting,
 	}
 
-	mySetting, err := setting.NewSetting()
+	mySetting, err := setting.NewSetting(strings.Split(config, ",")...)
 	if err != nil {
 		return err
 	}
@@ -60,6 +102,22 @@ func setupSetting() error {
 	global.ServerSetting.WriteTimeout *= time.Second
 	global.JWTSetting.Expire *= time.Second
 	global.AppSetting.ContextTimeout *= time.Second
+
+	if port != ""{
+		 global.ServerSetting.HttpPort = port
+	}
+
+	runModes := map[string]bool {
+		"debug": true,
+		"release": true,
+	}
+	if runMode != "" {
+		runMode = strings.ToLower(runMode)
+		if _, ok := runModes[runMode]; !ok{
+			return errors.New("runMode can only be 'debug' or 'release'.")
+		}
+		global.ServerSetting.RunMode = runMode
+	}
 
 	return nil
 }
@@ -108,25 +166,4 @@ func setupTracer() error {
 
 	global.Tracer = jaegerTracer
 	return nil
-}
-
-// @title 博客系统
-// @version 1.0
-// @description Go语言编程练习
-// @termsOfService http://fym123.top
-func main() {
-	gin.SetMode(global.ServerSetting.RunMode)
-	router := routers.NewRouter()
-
-	s := &http.Server{
-		Addr:           ":" + global.ServerSetting.HttpPort,
-		Handler:        router,
-		ReadTimeout:    global.ServerSetting.ReadTimeout,
-		WriteTimeout:   global.ServerSetting.WriteTimeout,
-		MaxHeaderBytes: 1 << 20,
-	}
-
-	fmt.Println("Start server http://locahost:" + global.ServerSetting.HttpPort)
-	err := s.ListenAndServe()
-	panic(err)
 }
