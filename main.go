@@ -22,6 +22,11 @@ var (
 	port string
 	runMode string
 	config string
+
+	isVersion bool
+	buildTime string
+	buildVersion string
+	gitCommitID string
 )
 
 func init() {
@@ -52,6 +57,11 @@ func init() {
 // @description Go语言编程练习
 // @termsOfService http://fym123.top
 func main() {
+	if isVersion {
+		printVersionInfo()
+		return
+	}
+
 	gin.SetMode(global.ServerSetting.RunMode)
 	router := routers.NewRouter()
 
@@ -68,10 +78,17 @@ func main() {
 	panic(err)
 }
 
+func printVersionInfo()  {
+	fmt.Printf("build time: %s\n", buildTime)
+	fmt.Printf("build version: %s\n", buildVersion)
+	fmt.Printf("git commit id: %s\n", gitCommitID)
+}
+
 func setupFlag() {
 	flag.StringVar(&port, "port", "", "启动端口")
 	flag.StringVar(&runMode, "mode", "", "启动模式, debug or release")
 	flag.StringVar(&config, "config", "configs/", "指定要使用的配置文件路径")
+	flag.BoolVar(&isVersion, "version", false, "显示编译信息")
 	flag.Parse()
 }
 
