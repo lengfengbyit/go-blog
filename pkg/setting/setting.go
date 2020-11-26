@@ -2,6 +2,7 @@ package setting
 
 import (
 	"fmt"
+	"github.com/fsnotify/fsnotify"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 	"os"
@@ -23,7 +24,7 @@ func NewSetting(configs ...string) (*Setting, error) {
 			vp.AddConfigPath(config)
 		}
 	}
-	
+
 	//vp.AddConfigPath("configs/")
 	vp.SetConfigType("yaml")
 	err := vp.ReadInConfig()
@@ -31,7 +32,19 @@ func NewSetting(configs ...string) (*Setting, error) {
 		return nil, err
 	}
 
-	return &Setting{vp}, nil
+	s := &Setting{vp}
+	s.WatchSettingChange()
+
+	return s, nil
 }
 
-
+// WatchSettingChange 监控配置文件是否修改
+func (s *Setting) WatchSettingChange() {
+	go func() {
+		s.vp.WatchConfig()
+		s.vp.OnConfigChange(func(in fsnotify.Event) {
+			_ = s.ReloadAllSection()
+			fmt.Println("config update:", in.Name, in.Op, in.String())
+		})
+	}()
+}
