@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -14,7 +15,10 @@ import (
 	"gotour/blog-service/pkg/tracer"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
 	"strings"
+	"syscall"
 	"time"
 )
 
@@ -73,9 +77,30 @@ func main() {
 		MaxHeaderBytes: 1 << 20,
 	}
 
-	fmt.Println("Start server http://locahost:" + global.ServerSetting.HttpPort)
-	err := s.ListenAndServe()
-	panic(err)
+	go func() {
+		fmt.Println("Start server http://locahost:" + global.ServerSetting.HttpPort)
+		err := s.ListenAndServe()
+		if err != nil  && err != http.ErrServerClosed {
+			log.Fatalf("s.ListenAndServer err: %v", err)
+		}
+	}()
+
+	// 等待中断信号
+	quit := make(chan os.Signal)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+
+	log.Println("Shuting down server...")
+
+
+	// 收到退出信号(CTRL + C)后，最长等待5秒
+	ctx, cancel := context.WithTimeout(context.Background(), 20 * time.Second)
+	defer cancel()
+	if err := s.Shutdown(ctx); err != nil {
+		log.Fatal("Server forced to shutdown:", err)
+	}
+
+	log.Println("Server exited")
 }
 
 func printVersionInfo()  {
