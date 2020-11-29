@@ -37,6 +37,7 @@ JWT:
   Issuer: blog-service
   Expire: 7200
 Email:
+  Enable: false
   Host: smtp.qq.com
   Port: 465
   UserName: xxxxx@qq.com

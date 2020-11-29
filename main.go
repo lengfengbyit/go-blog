@@ -23,14 +23,14 @@ import (
 )
 
 var (
-	port string
+	port    string
 	runMode string
-	config string
+	config  string
 
-	isVersion bool
-	buildTime string
+	isVersion    bool
+	buildTime    string
 	buildVersion string
-	gitCommitID string
+	gitCommitID  string
 )
 
 func init() {
@@ -80,7 +80,7 @@ func main() {
 	go func() {
 		fmt.Println("Start server http://locahost:" + global.ServerSetting.HttpPort)
 		err := s.ListenAndServe()
-		if err != nil  && err != http.ErrServerClosed {
+		if err != nil && err != http.ErrServerClosed {
 			log.Fatalf("s.ListenAndServer err: %v", err)
 		}
 	}()
@@ -92,9 +92,8 @@ func main() {
 
 	log.Println("Shuting down server...")
 
-
 	// 收到退出信号(CTRL + C)后，最长等待5秒
-	ctx, cancel := context.WithTimeout(context.Background(), 20 * time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 	if err := s.Shutdown(ctx); err != nil {
 		log.Fatal("Server forced to shutdown:", err)
@@ -103,7 +102,7 @@ func main() {
 	log.Println("Server exited")
 }
 
-func printVersionInfo()  {
+func printVersionInfo() {
 	fmt.Printf("build time: %s\n", buildTime)
 	fmt.Printf("build version: %s\n", buildVersion)
 	fmt.Printf("git commit id: %s\n", gitCommitID)
@@ -116,7 +115,6 @@ func setupFlag() {
 	flag.BoolVar(&isVersion, "version", false, "显示编译信息")
 	flag.Parse()
 }
-
 
 func setupSetting() error {
 	settingMap := map[string]interface{}{
@@ -145,17 +143,17 @@ func setupSetting() error {
 	global.JWTSetting.Expire *= time.Second
 	global.AppSetting.ContextTimeout *= time.Second
 
-	if port != ""{
-		 global.ServerSetting.HttpPort = port
+	if port != "" {
+		global.ServerSetting.HttpPort = port
 	}
 
-	runModes := map[string]bool {
-		"debug": true,
+	runModes := map[string]bool{
+		"debug":   true,
 		"release": true,
 	}
 	if runMode != "" {
 		runMode = strings.ToLower(runMode)
-		if _, ok := runModes[runMode]; !ok{
+		if _, ok := runModes[runMode]; !ok {
 			return errors.New("runMode can only be 'debug' or 'release'.")
 		}
 		global.ServerSetting.RunMode = runMode

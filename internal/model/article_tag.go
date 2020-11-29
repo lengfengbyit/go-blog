@@ -13,5 +13,5 @@ func (articleTag ArticleTag) TableName() string {
 }
 
 func (artTag *ArticleTag) CreateArticleTag(db *gorm.DB) error {
-	return db.Create(artTag).Error
+	return db.FirstOrCreate(artTag, &ArticleTag{ArticleId: artTag.ArticleId, TagId: artTag.TagId}).Error
 }

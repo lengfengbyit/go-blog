@@ -28,13 +28,17 @@ func Recovery() gin.HandlerFunc {
 				global.Logger.WithCallersFrames().Errorf(c, s, err)
 
 				// 异常信息 发送邮件通知管理员
-				err := defaultMailer.SendEmail(
-					global.EmailSetting.To,
-					fmt.Sprintf("异常抛出，发生时间: %d", time.Now().Unix()),
-					fmt.Sprintf("错误信息: %v", err),
-				)
-				if err != nil {
-					global.Logger.Panicf(c, "mail.SendMail err: %v", err)
+				if global.EmailSetting.Enable {
+					err := defaultMailer.SendEmail(
+						global.EmailSetting.To,
+						fmt.Sprintf("异常抛出，发生时间: %d", time.Now().Unix()),
+						fmt.Sprintf("错误信息: %v", err),
+					)
+					if err != nil {
+						global.Logger.Panicf(c, "mail.SendMail err: %v", err)
+					}
+				} else {
+					fmt.Println(err)
 				}
 
 				app.NewResponse(c).ToErrorResponse(errcode.ServerError)

@@ -18,10 +18,10 @@ func (article Article) TableName() string {
 	return "blog_article"
 }
 
-func (article *Article) First(db *gorm.DB) (*Article, error){
+func (article *Article) First(db *gorm.DB) (*Article, error) {
 	art := &Article{}
 	err := db.Preload("Tags").First(art).Error
-	return article, err
+	return art, err
 }
 
 func (article *Article) Count(db *gorm.DB) (int, error) {
@@ -54,7 +54,8 @@ func (article *Article) List(db *gorm.DB, pageOffSize, pageSize int) (articles [
 }
 
 func (article *Article) Create(db *gorm.DB) error {
-	return db.Create(article).Error
+	err := db.Attrs(article).FirstOrCreate(article, &Article{Title: article.Title}).Error
+	return err
 }
 
 func (article *Article) Update(db *gorm.DB, values map[string]interface{}) error {

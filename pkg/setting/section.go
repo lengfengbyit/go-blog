@@ -47,6 +47,7 @@ type JWTSetting struct {
 }
 
 type EmailSetting struct {
+	Enable   bool
 	Host     string
 	Port     int
 	UserName string

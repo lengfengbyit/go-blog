@@ -85,3 +85,8 @@ create table blog_service.blog_auth
 
 insert into blog_auth (app_key, app_secret, created_on, created_by, modified_on, modified_by, deleted_on, is_del)
 values ('go-blog', 'go-blog', 0, 'lengfengbyit', 0, '', 0, 0)
+
+insert into blog_tag (name, created_on, created_by, modified_on, modified_by, deleted_on, is_del, state)
+VALUES ('原创', 1606660448, 'fym', 1606660448, 'fym', 0, 0, 1),
+       ('精华', 1606660448, 'fym', 1606660448, 'fym', 0, 0, 1),
+       ('热门', 1606660448, 'fym', 1606660448, 'fym', 0, 0, 1);
