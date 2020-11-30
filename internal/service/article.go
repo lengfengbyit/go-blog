@@ -1,6 +1,7 @@
 package service
 
 import (
+	"gotour/blog-service/internal/dao"
 	"gotour/blog-service/internal/model"
 	"gotour/blog-service/pkg/app"
 	"gotour/blog-service/pkg/convert"
@@ -59,32 +60,33 @@ func (ser *Service) CreateArticle(param *CreateArticleRequest) error {
 		return errcode.InvalidParams
 	}
 
-	article, err := ser.dao.CreateArticle(
-		param.Title,
-		param.Desc,
-		param.Content,
-		param.CoverImageUrl,
-		param.CreatedBy,
-		param.State,
-	)
+	return ser.dao.Transaction(func(dao *dao.Dao) error {
+		article, err := dao.CreateArticle(
+			param.Title,
+			param.Desc,
+			param.Content,
+			param.CoverImageUrl,
+			param.CreatedBy,
+			param.State,
+		)
 
-	if err != nil {
-		return err
-	}
-
-	// 保存 文章 标签关系
-	for _, tagId := range tagIds {
-		artTag := &model.ArticleTag{
-			ArticleId: article.ID,
-			TagId: convert.StrTo(tagId).MustUInt32(),
-		}
-		err = ser.dao.CreateArticleTag(artTag)
 		if err != nil {
 			return err
 		}
-	}
 
-	return err
+		// 保存 文章 标签关系
+		for _, tagId := range tagIds {
+			artTag := &model.ArticleTag{
+				ArticleId: article.ID,
+				TagId:     convert.StrTo(tagId).MustUInt32(),
+			}
+			err = dao.CreateArticleTag(artTag)
+			if err != nil {
+				return err
+			}
+		}
+		return err
+	})
 }
 
 func (ser *Service) UpdateArticle(param *UpdateArticleRequest) error {
