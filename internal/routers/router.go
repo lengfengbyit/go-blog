@@ -76,6 +76,7 @@ func NewRouter() *gin.Engine {
 	// 上传文件
 	upload := api.NewUpload()
 	r.POST("/upload/file", upload.UploadFile)
+	r.POST("/upload/files", upload.MultiFormFile)
 
 	// JWT 获取 token
 	r.POST("/auth", api.GetAuth)

@@ -3,6 +3,9 @@ package helper
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"github.com/gin-gonic/gin"
+	"mime/multipart"
+	"os"
 	"time"
 )
 
@@ -22,4 +25,22 @@ func TimeFmt(t time.Time, typ string) string {
 		timeFmt = timeFmt[11:]
 	}
 	return t.Format(timeFmt)
+}
+
+// MultiFormFile 获取多个上传文件
+func MultiFormFile(c *gin.Context, key string) ([]*multipart.FileHeader, error) {
+	form, err := c.MultipartForm()
+	if form != nil && form.File != nil {
+		if fhs := form.File[key]; len(fhs) > 0 {
+			return fhs, nil
+		}
+	}
+	return nil, err
+}
+
+// DelFiles 批量删除文件
+func RemoveFile(paths ...string) {
+	for _, path := range paths {
+		_  = os.Remove(path)
+	}
 }

@@ -1,7 +1,6 @@
 package upload
 
 import (
-	"fmt"
 	"gotour/blog-service/global"
 	"gotour/blog-service/pkg/helper"
 	"io"
@@ -50,7 +49,6 @@ func CheckContainExt(t FileType, name string) bool {
 	ext := GetFileExt(name)
 	ext = strings.ToUpper(ext)
 
-	fmt.Println(ext, global.UploadSetting.ImageAllowExts)
 	switch t {
 	case TypeImage:
 		for _, allowExt := range global.UploadSetting.ImageAllowExts {
@@ -97,11 +95,14 @@ func SaveFile(fileHeader *multipart.FileHeader, dst string) (err error) {
 	if err != nil {
 		return
 	}
+	defer dstFile.Close()
 
 	srcFile, err := fileHeader.Open()
 	if err != nil {
 		return
 	}
+	defer srcFile.Close()
+
 	_, err = io.Copy(dstFile, srcFile)
 	return
 }

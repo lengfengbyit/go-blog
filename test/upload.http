@@ -1,3 +1,23 @@
+# curl -X POST http://localhost:8080/upload/file -F file=@1.jpg -F file=@2.jpg -F type=1
+POST http://localhost:8080/upload/files
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="1.jpg"
+
+< /Users/fym/Downloads/go.jpg
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="2.jpg"
+
+< /Users/fym/Downloads/logo.png
+--WebAppBoundary
+Content-Disposition: form-data; name="type"
+
+1
+--WebAppBoundary--
+
+###
+
 GET {{common-host}}/image/c36bbd258b7ee694eb987221b2b197b0.jpg
 
 ###
